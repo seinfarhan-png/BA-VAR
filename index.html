@@ -17,24 +17,32 @@
         }
 
         .container {
-            width: 210mm; /* Lebar A4 */
-            min-height: 297mm; /* Tinggi A4 */
+            /* Lebar 180mm agar tidak terlalu penuh dan tetap aman di PDF */
+            width: 180mm; 
             margin: 0 auto;
-            padding: 30px;
+            padding: 0; 
             background-color: white;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: none; 
+            box-shadow: none; 
         }
 
         h1.title {
             text-align: center;
             margin-bottom: 40px;
-            border-bottom: 2px solid #000;
+            border-bottom: none; 
             padding-bottom: 10px;
             font-size: 1.5em;
+            padding-left: 20px; 
+            padding-right: 20px;
+        }
+        
+       
+        .data-input, .keterangan-section, .penutup-section, .tanda-tangan, .credit-text {
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
-        /* Input Data */
+        /* Input Data (Garis bawah dipertahankan sebagai penanda kolom) */
         .data-input {
             margin-bottom: 15px;
             display: flex;
@@ -46,7 +54,7 @@
         .data-input input[type="text"] {
             flex-grow: 1;
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #000; /* Garis bawah input data */
             padding: 2px 5px;
             outline: none;
         }
@@ -58,7 +66,7 @@
         }
         .keterangan-section input[type="text"] {
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #000; /* Garis bawah input tanggal */
             padding: 2px 5px;
             width: 100px;
             display: inline-block;
@@ -66,10 +74,12 @@
         textarea {
             width: 100%;
             height: 100px;
-            border: 1px solid #ccc;
+            border: none; 
             padding: 10px;
             resize: vertical;
             margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #f7f7f7; 
         }
 
         /* Tanda Tangan Layout */
@@ -96,26 +106,27 @@
             font-size: 0.8em;
         }
 
-        /* TTD Digital Area (Hanya untuk Personil Toko) */
+       
         .ttd-area {
             height: 80px;
-            border: 1px solid #000;
+            border: 1px solid #000; 
             margin: 5px 0;
             cursor: crosshair;
-            background-color: #eee;
+            background-color: white; 
         }
         .ttd-box img.ttd-image {
             display: none; 
             width: 100%;
             height: 80px;
-            border: 1px solid #000;
+            /* GARIS DIKEMBALIKAN */
+            border: 1px solid #000; 
             object-fit: contain; 
         }
 
-        /* TTD Manual Area (Untuk Selain Personil Toko) */
+        
         .ttd-line {
             height: 80px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #000; 
             margin: 5px 0;
         }
 
@@ -139,7 +150,7 @@
             cursor: pointer;
             border: none;
             border-radius: 5px;
-            background-color: #28a745; /* Hijau untuk Share */
+            background-color: #28a745; 
             color: white;
         }
         
@@ -151,7 +162,6 @@
             color: #666;
         }
         
-        /* Sembunyikan tombol saat konversi PDF */
         .hide-on-export {
             display: none !important;
         }
@@ -182,7 +192,7 @@
             <input type="text" id="jabatan">
         </div>
 
-        <hr>
+        <hr style="margin: 20px 0;">
 
         <div class="keterangan-section">
             <p>
@@ -202,7 +212,9 @@
 
         <div class="tanda-tangan">
             <div class="ttd-box" style="margin-left: auto; text-align: right; width: 25%;">
-                <div class="tempat">Sidoarjo, <input type="text" id="tempat_dibuat" style="width: 80px; border: none; border-bottom: 1px solid #000; display: inline-block;"></div>
+                <div class="tempat">Sidoarjo, <input type="text" id="tempat_dibuat" style="width: 80px; border: none; border-bottom: 1px solid #000; display: inline-
+
+block;"></div>
                 <p>Dibuat</p>
                 <canvas id="signature-personil" class="ttd-area"></canvas>
                 <img class="ttd-image" alt="Tanda Tangan Personil Toko">
@@ -244,13 +256,12 @@
     </div>
 
     <script>
-        // Hanya satu canvas yang dipantau
+        
         const canvases = document.querySelectorAll('.ttd-area');
         const ttdImages = document.querySelectorAll('.ttd-image');
         const controls = document.querySelectorAll('.ttd-controls');
 
-        // --- FUNGSI TANDA TANGAN ---
-
+    
         function initSignaturePad(canvas) {
             const ctx = canvas.getContext('2d');
             let isDrawing = false;
@@ -318,25 +329,25 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        // --- FUNGSI UTILITY KONVERSI DAN RESET ---
+        
 
         function prepareForExport(state) {
             // state: 'exporting' atau 'done'
             canvases.forEach((canvas, index) => {
                 const img = ttdImages[index];
                 if (state === 'exporting') {
-                    // Konversi Canvas ke Image
+                  
                     if (canvas.toDataURL('image/png').length > 1000) { 
                         img.src = canvas.toDataURL('image/png');
                         img.style.display = 'block'; 
                         canvas.style.display = 'none';
                     }
-                    // Sembunyikan kontrol dan tombol aksi
+                    
                     controls.forEach(el => el.classList.add('hide-on-export'));
                     document.querySelector('.actions').classList.add('hide-on-export');
 
                 } else if (state === 'done') {
-                    // Kembalikan ke tampilan awal
+                    
                     canvas.style.display = 'block';
                     img.style.display = 'none';
                     controls.forEach(el => el.classList.remove('hide-on-export'));
@@ -345,14 +356,14 @@
             });
         }
         
-        // --- FUNGSI UTAMA BAGIKAN LANGSUNG PDF ---
+      
 
         async function sharePDF() {
             prepareForExport('exporting');
             
             const element = document.querySelector('.container');
             
-            // --- MODIFIKASI TANGGAL KE DD-MM-YYYY UNTUK NAMA FILE ---
+           
             const today = new Date();
             const dd = String(today.getDate()).padStart(2, '0');
             const mm = String(today.getMonth() + 1).padStart(2, '0'); 
@@ -360,21 +371,22 @@
             const dateStr = `${dd}-${mm}-${yyyy}`; 
             // ----------------------------------------
 
-            // Ambil nilai dari input Kode Toko
+          
             const kodeToko = document.getElementById('kode_toko').value;
             // Membersihkan string kodeToko (mengganti karakter non-alfanumerik dengan '_') 
             const safeKodeToko = kodeToko ? kodeToko.replace(/[^a-zA-Z0-9]/g, '_') : 'TANPA_KODE'; 
 
-            // Gabungkan dengan format nama file yang diinginkan
             const filename = `BA_VAR_${safeKodeToko}_${dateStr}.pdf`; 
 
             // Konfigurasi html2pdf
             const opt = {
+                // Margin 10mm yang aman
                 margin: [10, 10, 10, 10], 
                 filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                // Skala 1.0 yang aman
+                html2canvas: { scale: 1.0 }, 
+                jsPDF: { unit: 'mm', format: [210, 297], orientation: 'portrait' }
             };
 
             try {
@@ -415,7 +427,7 @@
             }
         }
         
-        // --- FUNGSI BARU: MENGISI TANGGAL DIBUAT OTOMATIS ---
+      
 
         function setCreationDate() {
             const dateInput = document.getElementById('tempat_dibuat');
@@ -434,7 +446,7 @@
             }
         }
 
-        // Panggil fungsi saat skrip selesai dimuat (atau saat DOMContentLoaded)
+        
         setCreationDate();
         
     </script>
