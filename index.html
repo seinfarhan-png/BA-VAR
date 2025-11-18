@@ -381,12 +381,11 @@ block;"></div>
 
             // Konfigurasi html2pdf
             const opt = {
-                // Margin 10mm yang aman
+            
                 margin: [5, 10, 10, 10], 
                 filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
-                // Skala 1.0 yang aman
-                html2canvas: { scale: 4.0 }, 
+                html2canvas: { scale: 3.0 }, 
                 jsPDF: { unit: 'mm', format: [210, 297], orientation: 'portrait' }
             };
 
@@ -453,6 +452,7 @@ block;"></div>
     </script>
 </body>
 </html>
+
 
 
 
